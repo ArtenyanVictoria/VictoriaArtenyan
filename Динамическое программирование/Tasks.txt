@@ -1,0 +1,142 @@
+Task Последовательность
+
+lst = [0] * 21
+lst[1] = 1
+lst[2] = 2
+for n in range(3, 21):
+    if n % 2 == 0:
+        lst[n] = (n // 2) * lst[n - 1]
+    else:
+        lst[n] = lst[n - 1] + lst[n - 2]
+lst.pop(0)
+print(lst)
+
+Task Диоген
+
+n = int(input())
+pst = []
+m = 1
+i = 1
+while m <= n:
+    pst.append(m)
+    i += 1
+    m = m + (i)
+lst = pst[:]
+if n in lst:
+    print(n)
+else:
+    for i in range(len(lst) - 1, - 1, -1):
+        flag = False
+        n1 = lst.pop(i)
+        if (n - n1) in lst:
+            print(f'{n1} {n - n1}')
+            break
+        l = 0
+        r = len(lst) - 1
+        while l < r:
+            if lst[l] + lst[r] > (n - n1):
+                r = r - 1
+            elif lst[l] + lst[r] < (n - n1):
+                l = l + 1
+            elif lst[l] + lst[r] == (n - n1):
+                print(f'{n1} {lst[r]} {lst[l]}')
+                flag = True
+                break
+        if flag == True:
+            break
+
+Task Рыбалка (Кузнечик)
+
+# сколько стоянок Бяксик может проплыть по реке
+k = int(input())
+
+# план Шулерика: на какой стоянке
+# сколько рыбы можно получить/потерять
+path = list(map(int, input().split()))
+kst = []
+lst = [0] *(len(path))
+for i in range(0, len(path)):
+    pst = []
+    for j in range(1, k + 1):
+        if i - j >= -1 and i - j < len(lst):
+            pst.append(lst[i - j] + path[i])
+    lst[i] = max(pst)
+for i in range(k):
+    if (-1 - i) >= -(len(lst)):
+        kst.append(lst[-1 - i])
+print(lst)
+print(max(kst))
+
+
+Вирус-Книголюб
+
+s = 'acdbababcdabcdbca'
+virus = 'abcd'
+N = len(s)
+s = s.replace(virus, ' ' + virus + ' ')
+s = s.split()
+maxi = 0
+kol = 0
+for x in s:
+    if x == virus:
+        kol += len(virus)
+    if x != virus and kol != 0:
+        if kol > maxi:
+            maxi = kol
+        kol = 0
+print(N - maxi)
+
+
+Task Мешок
+meshok, want = map(int, input().split())
+# номер шага
+step = 1
+huntel = int(input())
+# список шагов для соответствующего веса
+# каждому номеру соответствует свой вес
+# инициализируем -1
+findW = [-1] * (meshok + 1)
+# 0 и вес мешка получаем без взвешиваний
+findW[0] = 0
+findW[meshok] = 0
+# 3 и meshok - 3 за 1 взвешивание
+findW[huntel] = 1
+findW[meshok - huntel] = 1
+# если можно получить половину,
+# сразу получаем ее за одно взвешивание
+if meshok % 2 == 0:
+	findW[meshok // 2] = 1
+if huntel % 2 == 0:
+	findW[huntel // 2] = 1
+	findW[(meshok - huntel // 2)] = 1
+if (meshok - huntel) % 2 == 0:
+	findW[(meshok - huntel) // 2] = 1
+	findW[meshok - ((meshok - huntel) // 2)] = 1
+# Пока не заполнены шаги для каждого веса,
+# получаем новые веса
+while -1 in findW:
+	step += 1
+	for z in range(1, meshok):
+		if findW[z] == step - 1:
+# Сразу получаем два веса
+			if z * 2 < meshok and findW[z * 2] < 0:
+				findW[z * 2] = step
+				findW[meshok - (z * 2)] = step
+			if (z + huntel) < meshok and findW[z + huntel] < 0:
+				findW[z + huntel] = step
+				findW[meshok - (z + huntel)] = step
+			if (z - huntel) > 0 and  findW [z - huntel] < 0:
+				findW[z - huntel] = step
+				findW[meshok - (z - huntel)] = step
+			if (z % 2 == 0) and (z / 2 > 0) and findW[int(z / 2)] < 0:
+				findW[int(z / 2)] = step
+				findW[meshok - int(z /2)] = step
+			if (z % 2 == 0) and (z / 2 > 0) and findW[int(z / 2)] < 0:
+				findW[int(z / 2)] = step
+				findW[meshok - int(z /2)] = step
+print(findW)
+
+
+
+
+

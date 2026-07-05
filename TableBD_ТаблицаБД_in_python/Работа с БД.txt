@@ -1,0 +1,321 @@
+        #1.     Импорт библиотеки и подключение базы данных для работы
+
+import sqlite3 #библиотека
+conn = sqlite3.connect('company.bd') #Подключение к БД
+
+
+         #2.  Создание Таблицы и добавление в нее полей
+
+cursor = connection.cursor() #МЕТОД, КОТОРЫЙ ПОЗВОЛЯЕТ ПИСАТЬ ЯЗЫКОМ SQL
+#РАБОТА С ФАЙЛОМ employees
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS employees(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        position TEXT,
+        salary INTEGER,
+        hire_date TEXT
+    )
+'''
+)
+# СОЗДАЕМ ТАБЛИЦУ И ДОБАВЛЯЕМ В НЕЕ ПОЛЯ(СЛЕВА ИМЯ ПОЛЯ, А СПРАВА ЕГО ТИП ДАННЫХ
+connection.commit()
+print('Таблица employees создана')
+
+                    #3. Добавление первого сотрудника
+
+cursor.execute()(
+    "INSERT INTO employees (name, position, salary, hire_date) VALUES (?, ?, ?, ?)",
+    ("Иванов Иван Иванович", "Разработчик", 150000, "2023-10-15")
+)
+conn.commit()
+print("Первый сотрудник внесен")
+
+                    # 4. Добавление четырех сотрудников одним запросом
+
+employees_data = [ #Таблица для внесения сотрудников
+    ("Петров Петр Петрович", "Аналитик", 120000, "2024-01-20"),
+    ("Ларин Игорь Иванович", "Дизайнер", 100000, "2024-02-15"),
+    ("Сергеев Сергей Сергеевич", "Менеджер", 200000, "2023-01-27"),
+    ("Сергеев Сергей Сергеевич", "CTO", 300000, "2023-01-25")
+]
+cursor.executemany(
+    "INSERT INTO employees (name, position, salary, hire_date) VALUES (?, ?, ?, ?)",
+    employees_data
+)
+conn.commit()
+print("еще 4 сотрудника внесено")
+
+                        # 5. Поиск по имени (НЕПРАВИЛЬНЫЙ вариант)
+def unsafe_find(name):
+    query = f"SELECT * FROM employees WHERE name = '{name}'"
+    cursor.execute(query)
+    return cursor.fetchall()
+
+unsafe_find(" 'OR '1' = '1'") #Вывод всей таблички
+
+
+                        #6.   Поиск по имени (ПРАВИЛЬНЫЙ вариант)
+def safe_find(name):
+    cursor.execute("SELECT * FROM employees WHERE name = ?", (name,)) #Извлечение всех столбов таблицы
+    return cursor.fetchall() #возвращение строк, которые нам подходят под условие
+
+safe_find(" 'OR '1' = '1'") #Ничего не выдаст, так как такого имени нет
+safe_find("Сергеев Сергей Сергеевич") #Вывел строку, содержащую его имя и данные: ("Сергеев Сергей Сергеевич", "Менеджер", 200000, "2023-01-27"),
+                                                                                # ("Сергеев Сергей Сергеевич", "CTO", 300000, "2023-01-25")
+
+
+
+                        # 7. Вывод всех сотрудников в таблице
+
+cursor.execute("SELECT * FROM employees")
+all_employees = cursor.fetchall()
+
+for employee in all_employees:
+    print(f"ID: {emplyee[0]}, Имя: {employee[1]}, Должность: {employee[2]}, Зарплата: {employee[3]}")
+
+
+                #8. Поиск с условием
+
+cuesor.execute(
+    "SELECT ID, name, salary FROM employees WHERE salary > ?",   #Извлечение некоторых столбов таблицы
+    (120000,) #Вместо знаков вопроса
+)
+high_salary_employees = cursor.fetchall()
+
+for e in high_salary_employees:
+    print(f"ID: {e[0]}, Имя: {e[1]}, Зарплата: {e[2]}")
+
+                #9. Сотрудник, которого приняли последним
+
+cursor.execute(
+    "SELECT * FROM employees ORDER BY hire_date DESC LIMIT 1" #
+)
+newest_employee = cursor.fetchone()
+print(f"Самый новый сотрудник: {newest_employee[1]}, дата приема на работу: {newest_employee[4]}")
+
+Команды:
+1) ORDER BY hire_date DESC - сортирует результаты по полю hire_date (дата приема на работу) в порядке убывания (от самой новой до самой старой)
+2) LIMIT 1 - ограничивает результат одной записью
+3) fetchone() - получает одну запись (первую строку) из результата запроса. Результат сохраняется как кортеж (tuple), где каждый элемент - значение столбца
+
+
+                #10. Поиск по минимальной зарплате
+
+def find_employees_by_min_salary(min_salary):
+  cursor.execute(
+      "SELECT name, salary, position FROM employees WHERE salary > ? ORDER BY salary DESC",
+      (min_salary,)
+  )
+  return cursor.fetchall()
+
+high_earners = find_employees_by_min_salary(125000)
+for emp in high_earners:
+  print(f"{emp[0]} - {emp[1]} руб. {emp[2]}")
+
+Команды:
+A. Параметризованный запрос (?):
+? - заполнитель для параметра
+(min_salary,) - кортеж с передаваемым значением (запятая важна для кортежа из одного элемента)
+Почему это важно? Это защищает от SQL-инъекций. Значение min_salary безопасно подставляется в запрос, а не встраивается как часть строки.
+
+B. Структура запроса:
+SELECT name, salary, position - выбираем только нужные столбцы
+FROM employees - из таблицы сотрудников
+WHERE salary > ? - фильтр: зарплата больше заданного значения
+ORDER BY salary DESC - сортировка по зарплате по убыванию (от самой высокой)
+
+
+     11.    Общая зарплата сотрудников. Средняя зарплата сотрудников. Подсчет количества сотрудников
+
+
+cursor.execute(
+    "SELECT SUM(salary), AVG(salary), COUNT(*) FROM employees"
+)
+stats = cursor.fetchone() # stats будет кортежем с тремя элементами: (sum_salary, avg_salary, employee_count)
+
+print(f"Общий фонд: {stats[0]:,} руб.")
+print(f"Средняя зарплата: {stats[1]:0f} руб.")
+print(f"Количество сотрудников: {stats[2]} чел.")
+
+Команды:
+1) SUM(salary) - сумма всех зарплат (общий фонд оплаты труда)
+2) AVG(salary) - среднее арифметическое всех зарплат
+3) COUNT(*) - количество записей (сотрудников) в таблице
+Все три значения возвращаются одной строкой (одним кортежем).
+
+
+
+            12. Повышаем зарплату разработчикам на 15%
+
+1) Первая часть: Обновление зарплат
+
+cursor.execute(
+    "UPDATE employees SET salary = salary * 1.15 WHERE position = ?",
+    ("Разрабочик",)
+)
+conn.commit()
+Команды:
+1) UPDATE employees - обновляет записи в таблице employees
+2) SET salary = salary * 1.15 - увеличивает зарплату на 15%
+3) WHERE position = ? - только для сотрудников с указанной должностью
+4) conn.commit() - сохраняет изменения в базе данных (очень важно!)
+
+2) Вторая часть: Проверка изменений
+
+cursor.execute(
+    "SELECT name, salary FROM employees WHERE position = 'Разрабочик'"
+)
+devs = cursor.fetchall()
+for dev in devs:
+  print(f"{dev[0]}: {dev[1]} руб.")
+
+
+      13   Удаление сотрудников, принятых раньше 2024 года
+1) Удаление
+cursor.execute(
+    "DELETE FROM employees WHERE hire_date < '2024-01-01'"
+)
+conn.commit()
+print(f"Количество удаленных строк: {cursor.rowcount}")
+
+Команды:
+    1) cursor.rowcount — это атрибут объекта курсора, который показывает количество строк, затронутых последней операцией.
+
+
+2) Проверка, что остались сотрудники, принятые в 2024 году и позже
+cursor.execute(
+    "SELECT name, hire_date FROM employees"
+)
+remaining = cursor.fetchall()
+for e in remaining:
+  print(f"{e[0]} - {e[1]}")
+
+                    14. Изменение Менеджера на руководителя проекта с зарпалтой > 100000
+# Внесение изменений
+cursor.execute(
+    "UPDATE employees SET position = ? WHERE position = ? AND salary > ?",
+    ("Руководитель проекта", "Менеджер", 100000)
+)
+conn.commit()
+
+
+#Проверка
+cursor.execute("SELECT * FROM employees")
+all_employees = cursor.fetchall()
+
+for employee in all_employees:
+  print(f"ID: {employee[0]}, Имя: {employee[1]}, Должность: {employee[2]}, Зарплата: {employee[3]}")
+
+            15.  Сымитируйте перевод денег между сотрудниками с откатом при ошибке
+
+try:
+  cursor.execute(
+      "UPDATE employees SET salary = salary - 150000 WHERE id = ?",
+      (13,)
+  ) # Уменьшение зарплаты человеку с id 13
+
+  cursor.execute(
+      "UPDATE employees SET salary = salary + 150000 WHERE id = ?",
+      (10,)
+  ) Увеличение зарплаты человеку с id 10
+
+  cursor.execute(
+      "SELECT salary FROM employees WHERE id = ?",
+      (13,)
+  )
+  ivan_salary = cursor.fetchone()[0] #Переменная, хранящая зарплату Ивана(человека с id 13) после изменений
+
+  if ivan_salary<0:
+    raise ValueError("Зарплата не может быть отрицательной")
+
+  conn.commit()
+  print("Транзакция прошла!")
+
+# Блок перехвата и обработки исключений (ошибок)
+except Exception as e:
+    # Выполняем откат (rollback) текущей транзакции в базе данных
+    conn.rollback()
+    # Выводим сообщение об ошибке для пользователя/логгирования
+    print(f"Ошибка: {e}. Транзакция отменена!")
+
+Вывод результатов:
+cursor.execute(
+    "SELECT name, salary FROM employees WHERE id IN (10, 13)"
+)
+for name, salary in cursor:
+  print(f" {name}: {salary} руб.")
+
+                    16. Создайте таблицу projects с внешним ключом на employees
+
+cursor.execute( # Создание Таблицы Project, связанная с employees
+    '''
+    CREATE TABLE IF NOT EXISTS projects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      budget INTEGER,
+      employee_id INTEGER,
+      FOREIGN KEY (employee_id) REFERENCES employees (id)
+    )
+    '''
+)
+
+project_data = [ # Данные, которые нужно внести
+    ("Web-site", 1000000, 13),
+    ("Front-end", 750000, 6),
+    ("DevOps", 300000, 10),
+]
+
+cursor.executemany( # Внесение данных в эти поля
+    "INSERT INTO projects (name, budget, employee_id) VALUES (?, ?, ?)",
+    project_data
+)
+conn.commit()
+
+
+                    17.Сделайте запрос, который выводит проект и ответственного сотрудника
+
+-- Выбираем два столбца из разных таблиц:
+-- projects.name - название проекта из таблицы projects
+-- employees.name - имя сотрудника из таблицы employees
+SELECT projects.name, employees.name
+
+-- Указываем основную таблицу (FROM которой выбираем данные)
+FROM projects
+
+-- Выполняем INNER JOIN (внутреннее соединение) с таблицей employees
+INNER JOIN employees
+    -- Условие соединения: связываем таблицы по полю employee_id
+    ON projects.employee_id = employees.id
+
+cursor.execute(
+    '''
+    SELECT projects.name, employees.name
+    FROM projects
+    INNER JOIN employees ON projects.employee_id = employees.id
+    '''
+)
+
+for project_name, emp_name in cursor:
+  print(f"Проект: '{project_name}' - Ответственный: {emp_name}")
+
+
+                      19 Переподключение с использованием with (Считаем сотрудников)
+
+with sqlite3.connect('company.db') as conn:
+  cursor = conn.cursor()
+  cursor.execute(
+      "SELECT COUNT(*) FROM employees"
+  )
+  count = cursor.fetchone()[0] #(7,) -> 7
+  print(f"Всего сотрудников: {count}")
+
+                        20. Найдите сотрудников, чье имя содержит "ов"
+with sqlite3.connect('company.db') as conn:
+  cursor = conn.cursor()
+  cursor.execute(
+      "SELECT name FROM employees WHERE name LIKE ?",# Ищет имя, как нечеткий параметр
+      ('%ов%',)
+  )
+  for (name, ) in cursor:
+    print(name)

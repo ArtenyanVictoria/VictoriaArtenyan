@@ -1,0 +1,33 @@
+def format_duration(seconds):
+    year = 31536000
+    day = 86400
+    hour = 3600
+    min = 60
+    s = []
+    ss = ''
+    lst = ['year', 'day', 'hour', 'minute', 'second']
+    y = seconds // year
+    seconds = seconds - y * year
+    d = seconds // day
+    seconds = seconds - d * day
+    h = seconds // hour
+    seconds = seconds - h * hour
+    m = seconds // min
+    sec = seconds - m * min
+    tst = [y, d, h, m, sec]
+    for i in range(len(lst)):
+        if tst[i] != 0:
+            if tst[i] == 1:
+                s.append(f'{tst[i]} {lst[i]}')
+            else:
+                s.append(f'{tst[i]} {lst[i]}s')
+    if len(s) == 0:
+        return 'now'
+    for i in range(len(s)):
+        if i == len(s) - 2:
+            ss += s[i] + ' and '
+        elif i == len(s) - 1:
+            ss += s[i]
+        else:
+            ss += s[i] + ','
+    return ss

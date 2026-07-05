@@ -1,0 +1,58 @@
+def snail(array):
+    print(array)
+    lst = []
+    pst = []
+    flag = False
+    i = 0
+    j = 0
+    if len(array) != len(array[0]) or len(array[0]) <= 1:
+        return array[0]
+    l = len(array) ** 2
+    for n in range(1, l + 1):
+        for k in range(len(array)):
+            if len(lst) == l:
+                flag = True
+                break
+            if n % 4 == 1:
+                if [i, j + k] not in pst:
+                    lst.append(array[i][j + k])
+                    pst.append([i, j + k])
+                    if k == len(array) - 1:
+                        j = k
+                elif [i, j + k] in pst and j + k != j:
+                    j = j + k - 1
+                    # pst.append([i, j])
+                    break
+            elif n % 4 == 2:
+                if [i+k, j] not in pst:
+                    lst.append(array[i + k][j])
+                    pst.append([i+k, j])
+                    if k == len(array) - 1:
+                        i = k
+                elif [i+k, j] in pst and i + k != i:
+                    i = i + k - 1
+                    # pst.append([i, j])
+                    break
+            elif n % 4 == 3:
+                if [i, j - k] not in pst:
+                    lst.append(array[i][j-k])
+                    pst.append([i, j - k])
+                    if j - k == 0:
+                        j = j - k
+                elif [i, j-k] in pst and j - k != j:
+                    j = j - k + 1
+                    # pst.append([i, j])
+                    break
+            elif n % 4 == 0:
+                if [i-k, j] not in pst:
+                    lst.append(array[i - k][j])
+                    pst.append([i - k, j])
+                    if i - k == 0:
+                        i = i - k
+                elif [i-k, j] in pst and i - k != i:
+                    i = i - k + 1
+                    # pst.append([i, j])
+                    break
+        if flag == True:
+            return lst
+print(snail([[9, 2, 3, 11], [4, 9, 6, 11], [7, 8, 9, 11], [7, 8, 9, 11]]))

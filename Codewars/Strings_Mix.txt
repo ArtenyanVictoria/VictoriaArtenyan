@@ -1,0 +1,21 @@
+def mix(s1, s2):
+    print(s1, s2)
+    s = s2 + s1
+    lst = []
+    alf = 'abcdefghijklmnopqrstuvxyz'
+    for i in range(len(s)):
+        if s[i] in alf and s[i] not in lst:
+            lst.append(s[i])
+    rst = []
+    d1 = {}
+    d2 = {}
+    for i in range(len(lst)):
+        d1[lst[i]] = s1.count(lst[i])
+        d2[lst[i]] = s2.count(lst[i])
+        if max(d1[lst[i]], d2[lst[i]]) > 1 and d1[lst[i]] > d2[lst[i]]:
+            rst.append('1:' + lst[i] * d1[lst[i]])
+        elif max(d1[lst[i]], d2[lst[i]]) > 1 and d1[lst[i]] < d2[lst[i]]:
+            rst.append('2:' + lst[i] * d2[lst[i]])
+        elif max(d1[lst[i]], d2[lst[i]]) > 1 and d1[lst[i]] == d2[lst[i]]:
+            rst.append('=:' + lst[i] * d1[lst[i]])
+    return '/'.join(rst)
