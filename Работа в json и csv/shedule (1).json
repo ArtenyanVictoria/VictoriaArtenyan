@@ -1,0 +1,32 @@
+{
+    "week_1": {
+        "2024-09-01": [
+            {
+                "date": "2024-09-01",
+                "time": "10:00",
+                "name_lesson": "English",
+                "auditorium": "305",
+                "name_of_the_teacher": "John Smith",
+                "teachers_schedule": "Monday"
+            },
+            {
+                "date": "2024-09-01",
+                "time": "12:00",
+                "name_lesson": "Math",
+                "auditorium": "201",
+                "name_of_the_teacher": "Ivan Petrov",
+                "teachers_schedule": "Monday"
+            }
+        ],
+        "2024-09-02": [
+            {
+                "date": "2024-09-02",
+                "time": "09:00",
+                "name_lesson": "English Grammar",
+                "auditorium": "302",
+                "name_of_the_teacher": "John Smith",
+                "teachers_schedule": "Tuesday"
+            }
+        ]
+    }
+}
