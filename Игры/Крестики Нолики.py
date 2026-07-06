@@ -14,7 +14,6 @@ for i in range(8):
             else:
                 print("Error")
                 print("Try again")
-                mystep = input()
         lst.remove(mystep)
         a = a.replace(mystep, "0")
         print(a)
@@ -33,7 +32,6 @@ for i in range(8):
             else:
                 print("Error")
                 print("Try again")
-                mystep = input()
         lst.remove(mystep)
         a = a.replace(mystep, "0")
         print(a)
