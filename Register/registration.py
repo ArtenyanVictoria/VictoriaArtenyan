@@ -1,6 +1,6 @@
 import os
 lst = os.listdir('users')
-print(lst)
+print(lst) #['hilopa.txt', 'sirena.txt']
 
 # придумать логин
 login = input('What is your login? ')
