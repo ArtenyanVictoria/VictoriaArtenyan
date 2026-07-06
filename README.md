@@ -1,4 +1,4 @@
-# VictoriaArtenyan
+# Victoria Artenyan
 
 Меня зовут Артенян Виктория. Я выпускница школы и изучаю Python самостоятельно.
 
