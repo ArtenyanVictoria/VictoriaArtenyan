@@ -87,55 +87,6 @@ for x in s:
 print(N - maxi)
 
 
-Task Мешок
-meshok, want = map(int, input().split())
-# номер шага
-step = 1
-huntel = int(input())
-# список шагов для соответствующего веса
-# каждому номеру соответствует свой вес
-# инициализируем -1
-findW = [-1] * (meshok + 1)
-# 0 и вес мешка получаем без взвешиваний
-findW[0] = 0
-findW[meshok] = 0
-# 3 и meshok - 3 за 1 взвешивание
-findW[huntel] = 1
-findW[meshok - huntel] = 1
-# если можно получить половину,
-# сразу получаем ее за одно взвешивание
-if meshok % 2 == 0:
-	findW[meshok // 2] = 1
-if huntel % 2 == 0:
-	findW[huntel // 2] = 1
-	findW[(meshok - huntel // 2)] = 1
-if (meshok - huntel) % 2 == 0:
-	findW[(meshok - huntel) // 2] = 1
-	findW[meshok - ((meshok - huntel) // 2)] = 1
-# Пока не заполнены шаги для каждого веса,
-# получаем новые веса
-while -1 in findW:
-	step += 1
-	for z in range(1, meshok):
-		if findW[z] == step - 1:
-# Сразу получаем два веса
-			if z * 2 < meshok and findW[z * 2] < 0:
-				findW[z * 2] = step
-				findW[meshok - (z * 2)] = step
-			if (z + huntel) < meshok and findW[z + huntel] < 0:
-				findW[z + huntel] = step
-				findW[meshok - (z + huntel)] = step
-			if (z - huntel) > 0 and  findW [z - huntel] < 0:
-				findW[z - huntel] = step
-				findW[meshok - (z - huntel)] = step
-			if (z % 2 == 0) and (z / 2 > 0) and findW[int(z / 2)] < 0:
-				findW[int(z / 2)] = step
-				findW[meshok - int(z /2)] = step
-			if (z % 2 == 0) and (z / 2 > 0) and findW[int(z / 2)] < 0:
-				findW[int(z / 2)] = step
-				findW[meshok - int(z /2)] = step
-print(findW)
-
 
 
 
