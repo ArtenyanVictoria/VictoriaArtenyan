@@ -1,23 +1,24 @@
-# import os
-# lst = os.listdir()
-# login = input('What is your login? ')
-# password = input('What is your password? ')
-# while login + '.txt' in lst:
-#     print('This user already exist')
-#     login = input('What is your login? ')
-#     password = input('What is your password? ')
-# while len(login) < 6 or not login.isalpha() or len(password) < 8 or not password.isdigit():
-#     if len(login) < 6 or login + '.txt' in lst or not login.isalpha() or len(password) < 8 or not password.isdigit():
-#         print('Incorrect login or password')
-#         login = input('What is your login? ')
-#         password = input('What is your password? ')
-#     if len(login) >= 6 and login.isalpha() and len(password) >= 8 and password.isdigit():
-#         print('Successfully logged in')
-# file = open('users/' + login + '.txt', 'w')
-# file.write(login + '\n')
-# file.write(password + '\n')
+#Регистрация пользователя
+import os
+lst = os.listdir()
+login = input('What is your login? ')
+password = input('What is your password? ')
+while login + '.txt' in lst:
+    print('This user already exist')
+    login = input('What is your login? ')
+    password = input('What is your password? ')
+while len(login) < 6 or not login.isalpha() or len(password) < 8 or not password.isdigit():
+    if len(login) < 6 or login + '.txt' in lst or not login.isalpha() or len(password) < 8 or not password.isdigit():
+        print('Incorrect login or password')
+        login = input('What is your login? ')
+        password = input('What is your password? ')
+    if len(login) >= 6 and login.isalpha() and len(password) >= 8 and password.isdigit():
+        print('Successfully logged in')
+file = open('users/' + login + '.txt', 'w')
+file.write(login + '\n')
+file.write(password + '\n')
 
-
+#Вход пользователя
 import os
 lst = os.listdir('users')
 login = input("What is your login? ")
@@ -35,6 +36,3 @@ if login + '.txt' in lst:
         print("Успешно вошли")
     else:
         print("Неверный логин или пароль")
-
-#
-#     # if password not in
